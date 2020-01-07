@@ -15,7 +15,20 @@
         <TabControl Grid.Column="1">
             <TabItem Header="Weapons" FontFamily="Consolas" FontSize="16">
                 <Grid Background="#FFE5E5E5">
-                    <CheckBox Content="Infinite Ammo" HorizontalAlignment="Left" Margin="157,174,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" FontFamily="Consolas" FontSize="16"/>
+                    <CheckBox Content="Infinite Ammo" HorizontalAlignment="Left" Margin="168,284,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" FontFamily="Consolas" FontSize="16"/>
+                    <ListBox Margin="27,31,237,167">
+                        <ListBoxItem Content="Beretta 92F"/>
+                        <ListBoxItem Content="Beretta 92F Silenced"/>
+                        <ListBoxItem Content="Heckler Koch MP5"/>
+                        <ListBoxItem Content="SPAS 12"/>
+                        <ListBoxItem Content="Uzi"/>
+                        <ListBoxItem Content="MAC11"/>
+                        <ListBoxItem Content="M16"/>
+                        <ListBoxItem Content="M79 Grenade Launcher"/>
+                    </ListBox>
+                    <TextBlock HorizontalAlignment="Left" Margin="312,114,0,0" Text="Ammunition" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.716,1.003"/>
+                    <TextBox x:Name="TextBoxAmmunition" HorizontalAlignment="Left" Margin="277,146,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" Height="26" PreviewTextInput="TextBox_PreviewTextInput" MaxLines="1" MaxLength="6" Text="0" AllowDrop="False" TabIndex="1" UndoLimit="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                    <Button Content="Apply" HorizontalAlignment="Left" Margin="317,184,0,0" VerticalAlignment="Top" Background="#FFEAB519" Width="80"/>
                 </Grid>
             </TabItem>
         </TabControl>
