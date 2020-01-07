@@ -1,0 +1,24 @@
+﻿<Window x:Class="TrainerDriv3r.Trainer_Driv3r"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TrainerDriv3r"
+        mc:Ignorable="d"
+        Title="Trainer Driv3r" Height="450" Width="800" ResizeMode="CanMinimize" ShowInTaskbar="True">
+    <Grid Height="415">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="27*"/>
+        </Grid.ColumnDefinitions>
+        <Image HorizontalAlignment="Center" Width="320" Source="Resources/DRIV3R.jpg" Stretch="Fill" Margin="0,0,0,1"/>
+        <TabControl Grid.Column="1">
+            <TabItem Header="Weapons" FontFamily="Consolas" FontSize="16">
+                <Grid Background="#FFE5E5E5">
+                    <CheckBox Content="Infinite Ammo" HorizontalAlignment="Left" Margin="157,174,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" FontFamily="Consolas" FontSize="16"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+    </Grid>
+</Window>
