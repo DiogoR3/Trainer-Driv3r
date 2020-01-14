@@ -30,13 +30,19 @@ namespace TrainerDriv3r.Weaponry
                 processMemory.Write(newAddrress, ammoByte, new int[] { offset });
         }
 
-        public static void SetInfiniteAmmunition(ProcessMemory processMemory)
+        public static void SetInfiniteAmmunition(ProcessMemory processMemory, bool isInfinite)
         {
             int baseAddress = 0x102179;
             long newAddrress = processMemory.process.MainModule.BaseAddress.ToInt64() + baseAddress;
-            var assemblyNop = BitConverter.GetBytes(0x90);
-            assemblyNop = BitConverter.GetBytes(0x4A);
-            processMemory.Write((int)newAddrress, assemblyNop, 1);
+
+            byte[] assemblyInstruction;
+
+            if(isInfinite)
+                assemblyInstruction = BitConverter.GetBytes(0x90);
+            else
+                assemblyInstruction = BitConverter.GetBytes(0x4A);
+
+            processMemory.Write((int)newAddrress, assemblyInstruction, 1);
         }
 
         private static void GetNewAdrress(int[] offset)
