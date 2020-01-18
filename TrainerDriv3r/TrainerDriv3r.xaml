@@ -8,15 +8,20 @@
         Title="Trainer Driv3r" Height="450" Width="800" ResizeMode="CanMinimize" ShowInTaskbar="True">
     <Grid Height="415">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="170"/>
             <ColumnDefinition Width="27*"/>
         </Grid.ColumnDefinitions>
-        <Image HorizontalAlignment="Center" Width="320" Source="Resources/DRIV3R.jpg" Stretch="Fill" Margin="0,0,0,1"/>
-        <TabControl Grid.Column="1">
+        <Image HorizontalAlignment="Left" Width="320" Source="Resources/DRIV3R.jpg" Stretch="Fill" Margin="0,0,0,1" Grid.ColumnSpan="2"/>
+        <TabControl Grid.Column="2">
             <TabItem Header="Weapons" FontFamily="Consolas" FontSize="16">
                 <Grid Background="#FFE5E5E5">
-                    <CheckBox Content="Infinite Ammo" HorizontalAlignment="Left" Margin="168,284,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" FontFamily="Consolas" FontSize="16" Unchecked="CheckBox_Unchecked"/>
-                    <ListBox x:Name="ListBoxWeapons" Margin="27,31,237,167" HorizontalAlignment="Center" VerticalAlignment="Center" AlternationCount="-6" SelectionMode="Multiple">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="18*"/>
+                        <ColumnDefinition Width="61*"/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox Content="Infinite Ammo" HorizontalAlignment="Left" Margin="60,284,0,0" VerticalAlignment="Top" Checked="InfiniteAmmo_Checked" FontFamily="Consolas" FontSize="16" Unchecked="InfiniteAmmo_Unchecked" Grid.Column="1"/>
+                    <ListBox x:Name="ListBoxWeapons" Margin="37,31,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" AlternationCount="-6" SelectionMode="Multiple" Grid.ColumnSpan="2">
                         <ListBoxItem Content="Beretta 92F" />
                         <ListBoxItem Content="Beretta 92F Silenced"/>
                         <ListBoxItem Content="Heckler Koch MP5"/>
@@ -26,12 +31,28 @@
                         <ListBoxItem Content="M16"/>
                         <ListBoxItem Content="M79 Grenade Launcher"/>
                     </ListBox>
-                    <TextBlock HorizontalAlignment="Left" Margin="306,114,0,0" Text="Ammunition" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.716,1.003"/>
-                    <TextBox x:Name="TextBoxAmmunition" HorizontalAlignment="Left" Margin="271,146,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" Height="26" PreviewTextInput="TextBox_PreviewTextInput" MaxLines="1" MaxLength="6" Text="0" AllowDrop="False" TabIndex="1" UndoLimit="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                    <Button Content="Apply" HorizontalAlignment="Left" Margin="311,184,0,0" VerticalAlignment="Top" Background="#FFEAB519" Width="80" Click="ApplyButton_Click"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="198,114,0,0" Text="Ammunition" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.716,1.003" Grid.Column="1"/>
+                    <TextBox x:Name="TextBoxAmmunition" HorizontalAlignment="Left" Margin="163,146,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" Height="26" PreviewTextInput="TextBox_PreviewTextInput" MaxLines="1" MaxLength="6" Text="0" AllowDrop="False" TabIndex="1" UndoLimit="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="1"/>
+                    <Button Content="Apply" HorizontalAlignment="Left" Margin="203,184,0,0" VerticalAlignment="Top" Background="#FFEAB519" Width="80" Click="AmmoButton_Click" Grid.Column="1"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Health" FontFamily="Consolas" FontSize="16">
+                <Grid Background="#FFE5E5E5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10*"/>
+                        <ColumnDefinition Width="69*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Content="-" HorizontalAlignment="Left" Margin="56,57,0,0" VerticalAlignment="Top" Width="40" Click="DecreaseHealth_Click" Grid.ColumnSpan="2"/>
+                    <ProgressBar Name="healthBar" HorizontalAlignment="Left" Height="40" Margin="57,47,0,0" VerticalAlignment="Top" Width="240" Value="100" Grid.Column="1" />
+                    <Button Content="+" HorizontalAlignment="Left" Margin="317,57,0,0" VerticalAlignment="Top" Width="42" Click="IncreaseHealth_Click" Grid.Column="1"/>
+                    <Slider Name="healthBarSlider" HorizontalAlignment="Left" Margin="55,103,0,0" VerticalAlignment="Top" Width="238" SelectionStart="99" ValueChanged="healthBarSlider_ValueChanged" Grid.Column="1"/>
+                    <CheckBox Content="Crash Vehicle Damage" HorizontalAlignment="Left" Margin="81,154,0,0" VerticalAlignment="Top" Checked="CrashVehicle_Checked" FontFamily="Consolas" FontSize="16" Unchecked="CrashVehicle_Unchecked" IsChecked="True" Grid.Column="1"/>
+                    <CheckBox Content="Explosion Damage" HorizontalAlignment="Left" Margin="81,0,0,0" VerticalAlignment="Center" Checked="Explosion_Checked" FontFamily="Consolas" FontSize="16" Unchecked="Explosion_Unchecked" IsChecked="True" Grid.Column="1"/>
+                    <CheckBox Content="Shot Damage" HorizontalAlignment="Left" Margin="81,217,0,0" VerticalAlignment="Top" Checked="Shot_Checked" FontFamily="Consolas" FontSize="16" Unchecked="Shot_Unchecked" IsChecked="True" Grid.Column="1"/>
                 </Grid>
             </TabItem>
         </TabControl>
+
 
     </Grid>
 </Window>

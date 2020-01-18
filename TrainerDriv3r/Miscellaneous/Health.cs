@@ -1,56 +1,120 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using TrainerDriv3r.Extensions;
 
 namespace TrainerDriv3r.Miscellaneous
 {
     public static class Health
     {
         private const int BaseAddress = 0x004B8448;
-        private const int Maximum = 0x3F800000;
-        private const int MinimumVisible = 0x3B9ACA00;
-        private const int MinimumPossible = 0x33000000;
+        private const int nop = 0x90;
+        private static readonly byte[] nopInstruction = new byte[] { nop, nop, nop };
+        private static readonly int[] offsetsHealth = new int[] { 0xC, 0x4, 0x8, 0x24 };
 
-        private static readonly int[] offsets_Health = new int[] { 0xC, 0x4, 0x8, 0x24 };
-        public static void SetGivenHealth(ProcessMemory processMemory, int percentage)
+        public static float GetHealth(ProcessMemory processMemory)
         {
-            int newHealth = CalculateHealth(percentage);
-
-            byte[] percentageByte = BitConverter.GetBytes(newHealth);
-
-            long baseAddress = processMemory.process.MainModule.BaseAddress.ToInt64() + BaseAddress;
-
-            processMemory.Write(baseAddress, percentageByte, offsets_Health);
+            long baseAddress = processMemory.BaseToLong() + BaseAddress;
+            float health = processMemory.Read(baseAddress, offsetsHealth);
+            return health * 100;
         }
 
-        private static int CalculateHealth(int percentage)
+        public static void SetGivenHealth(ProcessMemory processMemory, int percentage)
         {
-            int[] percentagePermitted = new int[] { 1, 25, 50, 75, 100 };
+            if (percentage > 100 ^ percentage < 0)
+                throw new ArgumentOutOfRangeException("Percentage has to be between 0 and 100.");
 
-            if (!percentagePermitted.Contains(percentage))
-                throw new ArgumentOutOfRangeException("Percentage has to be 1, 25, 50, 75 or 100");
+            byte[] percentageByte = BitConverter.GetBytes(percentage / 100f);
 
-            int newHealth = default;
+            long baseAddress = processMemory.BaseToLong() + BaseAddress;
 
-            switch (percentage)
+            processMemory.Write(baseAddress, percentageByte, offsetsHealth);
+        }
+
+        public static void AddHealth(ProcessMemory processMemory, int health)
+        {
+            float actualHealth = GetHealth(processMemory);
+
+            if (actualHealth >= 100)
+                return;
+
+            SetGivenHealth(processMemory, (int)actualHealth + health);
+        }
+
+        public static void PlayerCrashVehicleDamage(ProcessMemory processMemory, bool enabled)
+        {
+            int carDamageBaseAddress = 0xEC7F3;
+            long newCarDamageAddress = processMemory.BaseToLong() + carDamageBaseAddress;
+
+            byte[] assemblyInstruction;
+
+            if (enabled)
+                assemblyInstruction = new byte[] { 0xD9, 0x56, 0x24 };
+            else
+                assemblyInstruction = nopInstruction;
+
+            processMemory.Write((int)newCarDamageAddress, assemblyInstruction, (uint)assemblyInstruction.Length);
+        }
+
+        public static void ExplosionDamage(ProcessMemory processMemory, bool enabled)
+        {
+            int instructionCounter = 3;
+
+            long[] explosionDamageAddress = { 0xECE52, 0xEC7F3, 0xEC805 };
+            byte?[,] assemblyOriginalInstructions =
             {
-                case 1:
-                    newHealth = MinimumVisible;
-                    break;
-                case 25:
-                    newHealth = 1048500000;
-                    break;
-                case 50:
-                    newHealth = 1057000000;
-                    break;
-                case 75:
-                    newHealth = 1060100000;
-                    break;
-                case 100:
-                    newHealth = Maximum;
-                    break;
+                { 0xD9, 0x5E, 0x24, null },
+                { 0xD9, 0x56, 0x24, null },
+                { 0xC7, 0x46, 0x24, 0 }
+            };
+
+            byte?[,] assemblyModifiedInstructions =
+            {
+                { nop, nop, nop, null, null, null, null },
+                { nop, nop, nop, null, null, null, null },
+                { nop, nop, nop, nop, nop, nop , nop }
+            };
+
+            while (instructionCounter-- > 0)
+            {
+                explosionDamageAddress[instructionCounter] += processMemory.BaseToLong();
+
+                byte[] assemblyInstruction = enabled ?
+                    GetByteArray(assemblyOriginalInstructions, instructionCounter) :
+                    GetByteArray(assemblyModifiedInstructions, instructionCounter);
+
+                processMemory.Write((int)explosionDamageAddress[instructionCounter], assemblyInstruction, (uint)assemblyInstruction.Length);
             }
 
-            return newHealth;
+        }
+
+        private static byte[] GetByteArray(byte?[,] assemblyInstructions, int instructionCounter)
+        {
+            byte?[] assemblyInstruction = Enumerable.Range(0, assemblyInstructions.GetLength(1))
+                       .Select(x => assemblyInstructions[instructionCounter, x])
+                       .ToArray();
+
+            List<byte> byteList = new List<byte>();
+
+            foreach (var @byte in assemblyInstruction)
+            {
+                if (@byte != null)
+                    byteList.Add((byte)@byte);
+            }
+
+            return byteList.ToArray();
+        }
+
+        public static void ShotDamage(ProcessMemory processMemory, bool enabled)
+        {
+            int explosionBaseAddress = 0xECAE6;
+            long newExplosionDamageAddress = processMemory.BaseToLong() + explosionBaseAddress;
+
+            byte[] assemblyInstruction = enabled ? 
+                new byte[] { 0xD9, 0x56, 0x24 } :
+                nopInstruction;
+
+            processMemory.Write((int)newExplosionDamageAddress, assemblyInstruction, (uint)assemblyInstruction.Length);
         }
     }
 }

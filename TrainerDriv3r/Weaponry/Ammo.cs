@@ -1,4 +1,5 @@
 ﻿using System;
+using TrainerDriv3r.Extensions;
 
 namespace TrainerDriv3r.Weaponry
 {
@@ -24,7 +25,7 @@ namespace TrainerDriv3r.Weaponry
                 case Weapon.M79_Grenade_Launcher: offset = 0x184; break;
             }
 
-            long newAddrress = processMemory.process.MainModule.BaseAddress.ToInt64() + baseAddress;
+            long newAddrress = processMemory.BaseToLong() + baseAddress;
 
             if (offset > 0)
                 processMemory.Write(newAddrress, ammoByte, new int[] { offset });
@@ -33,7 +34,7 @@ namespace TrainerDriv3r.Weaponry
         public static void SetInfiniteAmmunition(ProcessMemory processMemory, bool isInfinite)
         {
             int baseAddress = 0x102179;
-            long newAddrress = processMemory.process.MainModule.BaseAddress.ToInt64() + baseAddress;
+            long newAddrress = processMemory.BaseToLong() + baseAddress;
 
             byte[] assemblyInstruction;
 
@@ -43,11 +44,6 @@ namespace TrainerDriv3r.Weaponry
                 assemblyInstruction = BitConverter.GetBytes(0x4A);
 
             processMemory.Write((int)newAddrress, assemblyInstruction, 1);
-        }
-
-        private static void GetNewAdrress(int[] offset)
-        {
-
         }
     }
 }

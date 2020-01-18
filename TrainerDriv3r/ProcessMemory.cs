@@ -19,6 +19,14 @@ namespace TrainerDriv3r
             this.process = process;
         }
 
+        public float Read(long baseAddress, int[] offsets)
+        {
+            long foundAddress = GetTrueAddress(process.Handle, baseAddress, offsets);
+            byte[] buffer = new byte[4];
+            ReadProcessMemory(process.Handle, (IntPtr)foundAddress, buffer, buffer.Length, out IntPtr bytesRead);
+            return BitConverter.ToSingle(buffer);
+        }
+
         public void Write(long baseAddress, byte[] bytesToWrite, int[] offsets)
         {
             long foundAddress = GetTrueAddress(process.Handle, baseAddress, offsets);
@@ -32,17 +40,14 @@ namespace TrainerDriv3r
 
         private long GetTrueAddress(IntPtr process, long baseAddress, int[] offsets)
         {
-            foreach (var offset in offsets)
-                baseAddress = ReadInt32(process, (uint)baseAddress) + offset;
+            foreach(var offset in offsets)
+            {
+                byte[] buffer = new byte[4];
+                ReadProcessMemory(process, (IntPtr)baseAddress, buffer, buffer.Length, out IntPtr bytesRead);
+                baseAddress = BitConverter.ToInt32(buffer, 0) + offset;
+            }
 
             return baseAddress;
-        }
-
-        private int ReadInt32(IntPtr hProcess, uint dwAddress)
-        {
-            byte[] buffer = new byte[4];
-            ReadProcessMemory(hProcess, (IntPtr)dwAddress, buffer, 4, out IntPtr bytesread);
-            return BitConverter.ToInt32(buffer, 0);
         }
     }
 }
