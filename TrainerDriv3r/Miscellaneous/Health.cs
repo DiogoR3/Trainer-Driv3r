@@ -107,14 +107,14 @@ namespace TrainerDriv3r.Miscellaneous
 
         public static void ShotDamage(ProcessMemory processMemory, bool enabled)
         {
-            int explosionBaseAddress = 0xECAE6;
-            long newExplosionDamageAddress = processMemory.BaseToLong() + explosionBaseAddress;
+            int shotBaseAddress = 0xECAE6;
+            long newShotDamageAddress = processMemory.BaseToLong() + shotBaseAddress;
 
             byte[] assemblyInstruction = enabled ? 
                 new byte[] { 0xD9, 0x56, 0x24 } :
                 nopInstruction;
 
-            processMemory.Write((int)newExplosionDamageAddress, assemblyInstruction, (uint)assemblyInstruction.Length);
+            processMemory.Write((int)newShotDamageAddress, assemblyInstruction, (uint)assemblyInstruction.Length);
         }
     }
 }
